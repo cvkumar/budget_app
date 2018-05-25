@@ -6,6 +6,7 @@ from flask import render_template
 from flask import request
 from flask import jsonify
 import transaction_service
+import database
 
 app = Flask(__name__)
 
@@ -70,9 +71,12 @@ def transactions():
 
     try:
         response = client.Transactions.get(access_token, start_date, end_date)
+
+        transactionsResponse = response['transactions']
         transactionService = transaction_service.TransactionService()
-        transactionService.parseTransactionResponse(response)
-        return jsonify("")
+        transactionService.storeTransactions(transactionsResponse)
+
+        return jsonify(response)
     except plaid.errors.PlaidError as e:
         return jsonify({'error': {'error_code': e.code, 'error_message': str(e)}})
 
@@ -87,4 +91,6 @@ def create_public_token():
 
 
 if __name__ == "__main__":
+    database.setupDatabase()
+
     app.run(port=os.getenv('PORT', 5000))

@@ -1,13 +1,10 @@
-# Plaid quickstart
+# Budget App
 
-This repository accompanies Plaid's [**quickstart guide**][quickstart]. Here you'll find full example integration apps using our [**client libraries**][resources]:
+Goal of application is to grab personal transactions 
+using Plaid APIs and provide basic data viewing and analytics for user.
 
-- [Node][node-example]
-- [Ruby][ruby-example]
 - [Python][python-example]
 
+Resources
 [quickstart]: https://plaid.com/docs/quickstart
 [resources]: https://plaid.com/docs/resources
-[node-example]: /node
-[ruby-example]: /ruby
-[python-example]: /python

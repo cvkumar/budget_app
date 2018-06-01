@@ -5,8 +5,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
-import transaction_service
-import database
+import python.transaction_service
+import python.database
 
 app = Flask(__name__)
 
@@ -14,10 +14,10 @@ app = Flask(__name__)
 PLAID_CLIENT_ID = os.getenv('PLAID_CLIENT_ID')
 PLAID_SECRET = os.getenv('PLAID_SECRET')
 PLAID_PUBLIC_KEY = os.getenv('PLAID_PUBLIC_KEY')
+
 # Use 'sandbox' to test with Plaid's Sandbox environment (username: user_good,
 # password: pass_good)
 # Use `development` to test with live users and credentials and `production`
-# to go live
 PLAID_ENV = os.getenv('PLAID_ENV', 'sandbox')
 
 client = plaid.Client(client_id=PLAID_CLIENT_ID, secret=PLAID_SECRET,
@@ -73,7 +73,7 @@ def transactions():
         response = client.Transactions.get(access_token, start_date, end_date)
 
         transactionsResponse = response['transactions']
-        transactionService = transaction_service.TransactionService()
+        transactionService = python.transaction_service.TransactionService()
         transactionService.storeTransactions(transactionsResponse)
 
         return jsonify(response)
@@ -91,6 +91,6 @@ def create_public_token():
 
 
 if __name__ == "__main__":
-    database.setupDatabase()
+    python.database.setupDatabase()
 
     app.run(port=os.getenv('PORT', 5000))

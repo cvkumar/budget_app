@@ -7,6 +7,7 @@ from flask import request
 from flask import jsonify
 import python.transaction_service
 import python.database
+import python.instance.config
 
 app = Flask(__name__)
 

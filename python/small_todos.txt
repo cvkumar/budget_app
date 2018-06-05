@@ -1,0 +1,4 @@
+TODO: rename 'python' dir to 'app' dir
+TODO: make env variables load by method
+TODO: make database initialize by method
+TODO: add test framework

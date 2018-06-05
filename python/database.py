@@ -1,13 +1,14 @@
 from pony.orm import *
 from datetime import datetime
+import os
 
-# def setupDatabase():
 db = Database()
 
 
 class Transaction(db.Entity):
     id = PrimaryKey(unicode)
     account_id = Required(unicode)
+    account_owner = Required(str)
     name = Required(str)
     amount = Required(float)
     date = Required(datetime)
@@ -18,12 +19,11 @@ class Transaction(db.Entity):
     primary_category = Optional(str)
     secondary_category = Optional(str)
     transaction_type = Optional(str)
-    owner = Optional(str)
 
 
-def setupDatabase():
-    db.bind(provider='postgres', user='postgres', password='postgres', host='localhost', database='budget_app')
+def connectDatabase():
+    db.bind(provider='postgres', user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'),
+            host=os.getenv('POSTGRES_HOST'), database=os.getenv('DATABASE'))
 
-    # db.bind(provider='sqlite', filename=':memory:')
-    set_sql_debug(True)
+    set_sql_debug(bool(os.getenv('sql_debug')))
     db.generate_mapping(create_tables=True)

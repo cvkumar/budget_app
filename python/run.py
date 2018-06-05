@@ -7,7 +7,10 @@ from flask import request
 from flask import jsonify
 import python.transaction_service
 import python.database
+
+# THESE SET ENV VARS
 import python.instance.config
+import python.config
 
 app = Flask(__name__)
 
@@ -74,8 +77,7 @@ def transactions():
         response = client.Transactions.get(access_token, start_date, end_date)
 
         transactionsResponse = response['transactions']
-        transactionService = python.transaction_service.TransactionService()
-        transactionService.storeTransactions(transactionsResponse)
+        python.transaction_service.storeTransactions(transactionsResponse)
 
         return jsonify(response)
     except plaid.errors.PlaidError as e:
@@ -91,7 +93,14 @@ def create_public_token():
     return jsonify(response)
 
 
+@app.route("/my_transactions", methods=['GET'])
+def getTransactions():
+    transactions = python.transaction_service.retrieveTransactions()
+    transactionsDict = {'transactions': [t.to_dict() for t in transactions]}
+    return jsonify(transactionsDict)
+
+
 if __name__ == "__main__":
-    python.database.setupDatabase()
+    python.database.connectDatabase()
 
     app.run(port=os.getenv('PORT', 5000))

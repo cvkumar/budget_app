@@ -1,16 +1,19 @@
 import os
 import datetime
 import plaid
+import json
+
 from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
-import python.transaction_service
-import python.database
+
+import budget_app.transaction_service
+import budget_app.database
 
 # THESE SET ENV VARS
-import python.instance.config
-import python.config
+from budget_app.instance.config import set_private_environment_variables
+from budget_app.config import set_public_environment_variables
 
 app = Flask(__name__)
 
@@ -77,7 +80,7 @@ def transactions():
         response = client.Transactions.get(access_token, start_date, end_date)
 
         transactionsResponse = response['transactions']
-        python.transaction_service.storeTransactions(transactionsResponse)
+        budget_app.transaction_service.storePlaidTransactions(transactionsResponse)
 
         return jsonify(response)
     except plaid.errors.PlaidError as e:
@@ -90,17 +93,32 @@ def create_public_token():
     # Create a one-time use public_token for the Item. This public_token can be used to
     # initialize Link in update mode for the user.
     response = client.Item.public_token.create(access_token)
-    return jsonify(response)
+    # json_response = json.loads(response.data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 
 
+# MY ROUTES
 @app.route("/my_transactions", methods=['GET'])
 def getTransactions():
-    transactions = python.transaction_service.retrieveTransactions()
-    transactionsDict = {'transactions': [t.to_dict() for t in transactions]}
+    """
+
+    :return:
+    """
+    myTransactions = budget_app.transaction_service.retrieveTransactions()
+    transactionsDict = {'transactions': [t.to_dict() for t in myTransactions]}
     return jsonify(transactionsDict)
 
 
+@app.route("/my_transactions", methods=['POST'])
+def postTransactions():
+    """
+    Post Transactions
+    :return:
+    """
+    test = json.loads()
+
+
 if __name__ == "__main__":
-    python.database.connectDatabase()
+    set_public_environment_variables()
+    set_private_environment_variables()
 
     app.run(port=os.getenv('PORT', 5000))

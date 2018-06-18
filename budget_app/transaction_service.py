@@ -9,9 +9,21 @@ def retrieveTransactions():
     transactions = pny.select(transaction for transaction in Transaction)[:]
     return transactions
 
-
 @pny.db_session
 def storeTransactions(transactionsResponse):
+    for transactionResponse in transactionsResponse:
+        transactionEntity = Transaction(id=transactionResponse['transaction_id'], # Generate this
+                                        account_id=transactionResponse['account_id'], # May have to check database for this
+                                        account_owner='Caleb Kumar', # Hardcode
+                                        name=str(transactionResponse['name']), # Required
+                                        amount=transactionResponse['amount'], # Required
+                                        date=datetime.strptime(transactionResponse['date'], '%Y-%m-%d'), # If null, generate this
+                                        default_transaction_type=transactionResponse['transaction_type'], #
+                                        default_category1=str(transactionResponse['category']))
+
+
+@pny.db_session
+def storePlaidTransactions(transactionsResponse):
     for transactionResponse in transactionsResponse:
         transactionEntity = Transaction(id=transactionResponse['transaction_id'],
                                         account_id=transactionResponse['account_id'],

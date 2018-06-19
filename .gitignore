@@ -38,3 +38,6 @@ jspm_packages
 
 # Compiled python classes
 .pyc
+
+# Private vars there
+budget_app/budget_app/instance/config.py

@@ -80,7 +80,7 @@ def transactions():
         response = client.Transactions.get(access_token, start_date, end_date)
 
         transactionsResponse = response['transactions']
-        budget_app.transaction_service.storePlaidTransactions(transactionsResponse)
+        budget_app.transaction_service.store_plaid_transactions(transactionsResponse)
 
         return jsonify(response)
     except plaid.errors.PlaidError as e:
@@ -98,27 +98,29 @@ def create_public_token():
 
 # MY ROUTES
 @app.route("/my_transactions", methods=['GET'])
-def getTransactions():
+def get_transactions():
     """
-
-    :return:
     """
-    myTransactions = budget_app.transaction_service.retrieveTransactions()
-    transactionsDict = {'transactions': [t.to_dict() for t in myTransactions]}
+    myTransactions = budget_app.transaction_service.retrieve_transactions()
+    transactionsDict = {'transactions': [transaction.to_dict() for transaction in myTransactions]}
     return jsonify(transactionsDict)
 
 
 @app.route("/my_transactions", methods=['POST'])
-def postTransactions():
+def post_transactions():
     """
-    Post Transactions
-    :return:
+    Required: name, amount, date
+    Optional: primary_category, secondary_category, account_owner?, transaction_type?
     """
-    test = json.loads()
+
+    myTransactions = budget_app.transaction_service.store_transactions(request.json['transactions'])
+    transactionsDict = {'transactions': [t.to_dict() for t in myTransactions]}
+    return jsonify(transactionsDict)
 
 
 if __name__ == "__main__":
     set_public_environment_variables()
     set_private_environment_variables()
+    budget_app.database.connect_database()
 
     app.run(port=os.getenv('PORT', 5000))

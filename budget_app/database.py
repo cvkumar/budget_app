@@ -7,7 +7,7 @@ db = Database()
 
 class Transaction(db.Entity):
     id = PrimaryKey(unicode)
-    account_id = Required(unicode)
+    account_id = Optional(unicode)
     account_owner = Required(str)
     name = Required(str)
     amount = Required(float)
@@ -21,7 +21,7 @@ class Transaction(db.Entity):
     transaction_type = Optional(str)
 
 
-def connectDatabase():
+def connect_database():
     db.bind(provider='postgres', user=os.getenv('POSTGRES_USER'), password=os.getenv('POSTGRES_PASSWORD'),
             host=os.getenv('POSTGRES_HOST'), database=os.getenv('DATABASE'))
 

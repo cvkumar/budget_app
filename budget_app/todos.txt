@@ -1,6 +1,6 @@
-TODO: add test framework
-TODO: rename code transfer endpoint
+SMALL
+TODO: get transactions pagination
 
-BIG ONES
-TODO: get all transactions endpoint
+BIG
+TODO: post transactions endpoint
 TODO: put transaction endpoint

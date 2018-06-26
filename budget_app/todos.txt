@@ -2,5 +2,6 @@ SMALL
 TODO: get transactions pagination
 
 BIG
-TODO: post transactions endpoint
-TODO: put transaction endpoint
+TODO: put transactions endpoint
+TODO: delete transactions endpoint
+TODO: start creating UI framework
